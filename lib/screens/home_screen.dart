@@ -16,6 +16,7 @@
 //
 
 import 'package:desafio_mobile/widgets/custom_button.dart';
+import 'package:desafio_mobile/widgets/logo.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -31,11 +32,8 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Image(
-              image: AssetImage('assets/images/labsecLogo.png'),
-              width: 200,
-              height: 200,
-            ),
+            const SizedBox(height: 50),
+            const Logo(),
             const SizedBox(height: 50),
             CustomButton(
               title: 'Dispositivos BLE',

@@ -15,13 +15,17 @@
 // 4. Verificar lista".
 //
 
+// Importações.
 import 'package:desafio_mobile/widgets/custom_button.dart';
 import 'package:desafio_mobile/widgets/logo.dart';
 import 'package:flutter/material.dart';
 
+// Classe HomeScreen.
+// Responsável por retornar o widget da tela inicial.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
+  // Método que retorna o widget da tela inicial.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,13 +36,13 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 50),
+            const SizedBox(height: 30),
             const Logo(),
             const SizedBox(height: 50),
             CustomButton(
               title: 'Dispositivos BLE',
               onPressed: () {
-                Navigator.pushNamed(context, '/blank');
+                Navigator.pushNamed(context, '/ble_device');
               },
             ),
             const SizedBox(height: 20),

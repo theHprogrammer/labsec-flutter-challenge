@@ -20,12 +20,9 @@ import 'package:desafio_mobile/widgets/custom_button.dart';
 import 'package:desafio_mobile/widgets/logo.dart';
 import 'package:flutter/material.dart';
 
-// Classe HomeScreen.
-// Responsável por retornar o widget da tela inicial.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
-  // Método que retorna o widget da tela inicial.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,11 +31,11 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(height: 30),
+            const SizedBox(height: 80),
             const Logo(),
-            const SizedBox(height: 50),
+            const SizedBox(height: 5),
             CustomButton(
               title: 'Dispositivos BLE',
               onPressed: () {
@@ -49,7 +46,7 @@ class HomeScreen extends StatelessWidget {
             CustomButton(
               title: 'Gerar chave RSA',
               onPressed: () {
-                Navigator.pushNamed(context, '/blank');
+                Navigator.pushNamed(context, '/rsa');
               },
             ),
             const SizedBox(height: 20),

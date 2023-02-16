@@ -4,20 +4,16 @@
 //
 // Tipo: Widget
 //
+// Detalhes:
+// 1. Uso de media query para definir o tamanho da logo de acordo com o tamanho da tela.
+//
 
 // Importações.
 import 'package:flutter/material.dart';
 
-// Classe Logo.
-// Responsável por retornar o widget da logo.
 class Logo extends StatelessWidget {
   const Logo({Key? key}) : super(key: key);
 
-  // Método que retorna o widget da logo.
-  // A logo é um arquivo .png que está na pasta assets/images.
-  // O tamanho da logo é definido em relação ao tamanho da tela.
-  // A largura da logo é 80% da largura da tela.
-  // A altura da logo é 20% da altura da tela.
   @override
   Widget build(BuildContext context) {
     return SizedBox(

@@ -7,6 +7,18 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
     <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" />
+    <uses-permission android:name="android.permission.NEARBY_WIFI_SCAN" />
+    <uses-permission android:name="android.permission.NEARBY_WIFI_ADVERTISE" />
+    <uses-permission android:name="android.permission.NEARBY_WIFI_CONNECT" />
+
+    <!-- Permissão de acesso a armazenamento externo e interno -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
+    <!-- Permissão de acesso a localização -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
    <application
         android:label="desafio_mobile"
         android:name="${applicationName}"

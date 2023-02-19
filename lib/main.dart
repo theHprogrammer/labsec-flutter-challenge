@@ -16,9 +16,26 @@ import 'package:desafio_mobile/screens/blank_page.dart';
 import 'package:desafio_mobile/screens/ble_device_screen.dart';
 import 'package:desafio_mobile/screens/home_screen.dart';
 import 'package:desafio_mobile/screens/rsa_screen.dart';
+import 'package:desafio_mobile/screens/signature_screen.dart';
+import 'package:desafio_mobile/shared/device_list_provider.dart';
+import 'package:desafio_mobile/shared/rsa_keys_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(
+      // Varios providers
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => DevicesListProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => RsaKeysProvider(),
+          ),
+        ],
+        child: const MyApp(),
+      ),
+    );
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -32,9 +49,10 @@ class MyApp extends StatelessWidget {
       ),
       home: const HomeScreen(),
       routes: <String, WidgetBuilder>{
-        '/blank': (BuildContext context) => const BlankPage(),
+        '/blank': (BuildContext context) => const RsaKeysScreen(),
         '/ble_device': (BuildContext context) => const DeviceScreen(),
         '/rsa': (BuildContext context) => const RsaScreen(),
+        '/signature': (BuildContext context) => const SignatureScreen(),
       },
     );
   }

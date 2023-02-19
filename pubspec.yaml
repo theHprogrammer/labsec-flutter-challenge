@@ -39,6 +39,9 @@ dependencies:
     intl: ^0.18.0
     shared_preferences: ^2.0.17
     fast_rsa: ^3.5.3
+    pointycastle: ^3.6.2
+    provider: ^6.0.5
+    crypto: ^3.0.2
 
 dev_dependencies:
     flutter_test:

@@ -53,7 +53,7 @@ class HomeScreen extends StatelessWidget {
             CustomButton(
               title: 'Assinar lista',
               onPressed: () {
-                Navigator.pushNamed(context, '/blank');
+                Navigator.pushNamed(context, '/signature');
               },
             ),
             const SizedBox(height: 20),

@@ -15,48 +15,52 @@
 //
 
 // Importações.
+import 'package:desafio_mobile/shared/rsa_keys_provider.dart';
 import 'package:desafio_mobile/widgets/custom_button.dart';
 import 'package:desafio_mobile/widgets/logo.dart';
 import 'package:desafio_mobile/widgets/rsa_box.dart';
 import 'package:fast_rsa/fast_rsa.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RsaScreen extends StatefulWidget {
-  const RsaScreen({super.key});
+  const RsaScreen({Key? key}) : super(key: key);
 
   @override
   State<RsaScreen> createState() => _RsaScreenState();
 }
 
 class _RsaScreenState extends State<RsaScreen> {
-  String? _publicKey;
-  String? _privateKey;
   int _rsaSize = 512;
 
   @override
   void initState() {
     super.initState();
-    _loadKeys();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadRsaKeys();
+    });
   }
 
-  void _loadKeys() async {
+  void _loadRsaKeys() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _publicKey = prefs.getString('publicKey');
-      _privateKey = prefs.getString('privateKey');
-    });
+    final publicKey = prefs.getString('publicKey');
+    final privateKey = prefs.getString('privateKey');
+    if (publicKey != null && privateKey != null) {
+      context.read<RsaKeysProvider>().updatePublicKey(publicKey);
+      context.read<RsaKeysProvider>().updatePrivateKey(privateKey);
+    }
   }
 
   void _generateKeys() async {
     final prefs = await SharedPreferences.getInstance();
-    final rsa = await RSA.generate(_rsaSize);
-    setState(() {
-      _publicKey = rsa.publicKey;
-      _privateKey = rsa.privateKey;
-    });
-    prefs.setString('publicKey', _publicKey!);
-    prefs.setString('privateKey', _privateKey!);
+    final keyPair = await RSA.generate(_rsaSize);
+    final publicKey = keyPair.publicKey;
+    final privateKey = keyPair.privateKey;
+    prefs.setString('publicKey', publicKey);
+    prefs.setString('privateKey', privateKey);
+    context.read<RsaKeysProvider>().updatePublicKey(publicKey);
+    context.read<RsaKeysProvider>().updatePrivateKey(privateKey);
   }
 
   void _showDialog() {
@@ -88,72 +92,87 @@ class _RsaScreenState extends State<RsaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gerar chave RSA'),
-      ),
-      body: SizedBox(
-        height: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 80),
-            const Logo(),
-            const SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Tamanho da chave:'),
-                const SizedBox(width: 10),
-                DropdownButton<int>(
-                  value: _rsaSize,
-                  items: const [
-                    DropdownMenuItem(
-                      value: 512,
-                      child: Text('512'),
+    return ChangeNotifierProvider<RsaKeysProvider>(
+      create: (context) => RsaKeysProvider(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Gerar chave RSA'),
+        ),
+        body: SizedBox(
+          height: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 80),
+              const Logo(),
+              const SizedBox(height: 5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Tamanho da chave:'),
+                  const SizedBox(width: 10),
+                  DropdownButton<int>(
+                    value: _rsaSize,
+                    items: const [
+                      DropdownMenuItem(
+                        value: 512,
+                        child: Text('512'),
+                      ),
+                      DropdownMenuItem(
+                        value: 1024,
+                        child: Text('1024'),
+                      ),
+                      DropdownMenuItem(
+                        value: 2048,
+                        child: Text('2048'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _rsaSize = value!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              RsaBox(
+                title: 'Chave pública:',
+                value: context
+                    .watch<RsaKeysProvider>()
+                    .publicKey
+                    ?.split('-----')[2]
+                    .trim(),
+              ),
+              const SizedBox(height: 20),
+              RsaBox(
+                title: 'Chave privada:',
+                value: context
+                    .watch<RsaKeysProvider>()
+                    .privateKey
+                    ?.split('-----')[2]
+                    .trim(),
+              ),
+              // Se as chaves forem nulas, exibe o botão gerar chave. Caso contrário, exibe o botão para "gerar nova chave".
+              // Se for para gerar nova chave, mostra o dialogo de confirmação.
+              const SizedBox(height: 30),
+              context.watch<RsaKeysProvider>().publicKey == null &&
+                      context.watch<RsaKeysProvider>().privateKey == null
+                  ? CustomButton(
+                      title: 'Gerar chave',
+                      onPressed: () {
+                        _generateKeys();
+                      },
+                    )
+                  : CustomButton(
+                      title: 'Gerar nova chave',
+                      onPressed: () {
+                        _showDialog();
+                      },
                     ),
-                    DropdownMenuItem(
-                      value: 1024,
-                      child: Text('1024'),
-                    ),
-                    DropdownMenuItem(
-                      value: 2048,
-                      child: Text('2048'),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      _rsaSize = value!;
-                    });
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            RsaBox(
-              title: 'Chave pública:',
-              value: _publicKey?.split('-----')[2].trim(),
-            ),
-            const SizedBox(height: 20),
-            RsaBox(
-              title: 'Chave privada:',
-              value: _privateKey?.split('-----')[2].trim(),
-            ),
-            const SizedBox(height: 30),
-            CustomButton(
-              title: _publicKey == null && _privateKey == null
-                  ? 'Gerar chave'
-                  : 'Gerar nova chave',
-              onPressed: () {
-                if (_publicKey == null && _privateKey == null) {
-                  _generateKeys();
-                } else {
-                  _showDialog();
-                }
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -16,20 +16,21 @@
 
 // Importações.
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 
 class BleListBox extends StatelessWidget {
   // Construtor constante.
   const BleListBox({
     Key? key,
     required this.dateTime,
-    required this.listBle,
+    required this.devicesList,
     required this.deviceScan,
   }) : super(key: key);
 
   // Atributos.
   final String dateTime;
-  final List<BluetoothDevice> listBle;
+  // name:
+  // id:
+  final List<Map<String, dynamic>> devicesList;
   final String? deviceScan;
 
   // Função para o que vai aparecer no device scan.
@@ -95,11 +96,21 @@ class BleListBox extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: listBle.length,
-                itemBuilder: (BuildContext context, int index) {
+                itemCount: devicesList.length,
+                itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(listBle[index].name),
-                    subtitle: Text(listBle[index].id.toString()),
+                    title: Text(
+                      devicesList[index]['name'],
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
+                      ),
+                    ),
+                    subtitle: Text(
+                      devicesList[index]['id'],
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
+                      ),
+                    ),
                   );
                 },
               ),

@@ -6,20 +6,53 @@
 // 1. Página em branco com o texto "Página em branco".
 //
 
-// Importações.
+import 'package:desafio_mobile/shared/rsa_keys_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class BlankPage extends StatelessWidget {
-  const BlankPage({Key? key}) : super(key: key);
+class RsaKeysScreen extends StatelessWidget {
+  const RsaKeysScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final publicKey = Provider.of<RsaKeysProvider>(context, listen: true)
+        .publicKey
+        ?.split('-----')[2]
+        .trim();
+    final privateKey = Provider.of<RsaKeysProvider>(context, listen: true)
+        .privateKey
+        ?.split('-----')[2]
+        .trim();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Página em branco'),
+        title: const Text('Chaves RSA'),
       ),
-      body: const Center(
-        child: Text('Página em branco'),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Chave pública:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              publicKey ?? 'Nenhuma chave pública gerada',
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Chave privada:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              privateKey ?? 'Nenhuma chave privada gerada',
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -18,6 +18,7 @@ import 'package:desafio_mobile/screens/home_screen.dart';
 import 'package:desafio_mobile/screens/rsa_screen.dart';
 import 'package:desafio_mobile/screens/signature_screen.dart';
 import 'package:desafio_mobile/shared/device_list_provider.dart';
+import 'package:desafio_mobile/shared/digital_signature_provider.dart';
 import 'package:desafio_mobile/shared/rsa_keys_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,9 @@ void main() => runApp(
           ),
           ChangeNotifierProvider(
             create: (_) => RsaKeysProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => DigitalSignatureProvider(),
           ),
         ],
         child: const MyApp(),

@@ -28,8 +28,6 @@ class BleListBox extends StatelessWidget {
 
   // Atributos.
   final String dateTime;
-  // name:
-  // id:
   final List<Map<String, dynamic>> devicesList;
   final String? deviceScan;
 

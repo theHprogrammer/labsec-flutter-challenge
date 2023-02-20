@@ -20,6 +20,7 @@ import 'package:desafio_mobile/widgets/custom_button.dart';
 import 'package:desafio_mobile/widgets/logo.dart';
 import 'package:desafio_mobile/widgets/rsa_box.dart';
 import 'package:fast_rsa/fast_rsa.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,8 +48,14 @@ class _RsaScreenState extends State<RsaScreen> {
     final publicKey = prefs.getString('publicKey');
     final privateKey = prefs.getString('privateKey');
     if (publicKey != null && privateKey != null) {
-      context.read<RsaKeysProvider>().updatePublicKey(publicKey);
-      context.read<RsaKeysProvider>().updatePrivateKey(privateKey);
+      if (context.mounted) {
+        context.read<RsaKeysProvider>().updatePublicKey(publicKey);
+        context.read<RsaKeysProvider>().updatePrivateKey(privateKey);
+      } else {
+        if (kDebugMode) {
+          print('O contexto não está montado.');
+        }
+      }
     }
   }
 
@@ -59,8 +66,14 @@ class _RsaScreenState extends State<RsaScreen> {
     final privateKey = keyPair.privateKey;
     prefs.setString('publicKey', publicKey);
     prefs.setString('privateKey', privateKey);
-    context.read<RsaKeysProvider>().updatePublicKey(publicKey);
-    context.read<RsaKeysProvider>().updatePrivateKey(privateKey);
+    if (context.mounted) {
+      context.read<RsaKeysProvider>().updatePublicKey(publicKey);
+      context.read<RsaKeysProvider>().updatePrivateKey(privateKey);
+    } else {
+      if (kDebugMode) {
+        print('O contexto não está montado.');
+      }
+    }
   }
 
   void _showDialog() {

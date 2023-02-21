@@ -6,7 +6,7 @@
 //
 
 // Importações.
-import 'package:desafio_mobile/main/LabApp.dart';
+import 'package:desafio_mobile/main/lab_app.dart';
 import 'package:flutter/material.dart';
 
 

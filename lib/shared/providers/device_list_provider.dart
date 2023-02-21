@@ -4,6 +4,7 @@
 //
 
 import 'package:flutter/foundation.dart';
+
 import 'package:flutter_blue/flutter_blue.dart';
 
 class DevicesListProvider extends ChangeNotifier {
@@ -36,8 +37,8 @@ class DevicesListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Método para converter as Lists nameDevices e idDevices para JSON.
-  // Se o dispositivo não tiver nome, o nome é definido como "Unknow device".
+  // Método toJson.
+  // Converte as Lists nameDevices e idDevices para JSON.
   List<Map<String, String>> toJson(
       List<String?> nameDevices, List<String?> idDevices) {
     final List<Map<String, String>> jsonList = [];
@@ -51,15 +52,5 @@ class DevicesListProvider extends ChangeNotifier {
     return jsonList;
   }
 
-  // // Converter a lista de dispositivos para JSON.
-  // List<Map<String, dynamic>> bleToJson(List<BluetoothDevice> devicesList) {
-  //   final List<Map<String, dynamic>> jsonList = [];
-  //   for (int i = 0; i < devicesList.length; i++) {
-  //     jsonList.add({
-  //       'name': devicesList[i].name,
-  //       'id': devicesList[i].id.toString(),
-  //     });
-  //   }
-  //   return jsonList;
-  // }
+
 }

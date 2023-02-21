@@ -7,29 +7,27 @@
 // Detlhes:
 // 1. A verificação de uma assinatura digital garante que o documento não foi alterado.
 // 2. A verificação de uma assinatura digital garante que o documento foi assinado pelo proprietário da chave privada.
-// 3. Utilizaremos a biblioteca fast_rsa para realizar a verificação da assinatura digital.
-// 3.1 Será usado o método verifyPKCS1v15(String signature, String message, Hash hash, String publicKey) → Future<bool> para realizar a verificação.
-// 3.2 O resultado é mostrado dentro da caixa do (rsa_box.dart).
-// 4. Será usado o provider (device_list_provider.dart) para obter a lista de dispositivos BLE.
-// 5. Será usado o provider (digital_signature_provider.dart) para obter a assinatura digital.
-// 6. Será usado o provider (rsa_keys_provider.dart) para obter a chave pública.
-// 7. Se a verificação for bem sucedida, será exibida uma mensagem de sucesso.
-// 7.1. Se a verificação não for bem sucedida, será exibida uma mensagem de erro.
-// 8. O botão a baixo da tela começará com "Verificar assinatura", depois ele muda para "Verificar novamente", mas se a verificação não for bem sucedida, ele volta para "Verificar assinatura".
 //
-
-import 'dart:async';
+// Bibliotecas:
+// 1. fast_rsa: Biblioteca para verificar a assinatura digital.
+// 2. shared_preferences: Biblioteca para salvar a assinatura digital no dispositivo.
+// 3. provider: Biblioteca para gerenciar o estado da aplicação.
+// 
 
 // Importações.
-import 'package:desafio_mobile/shared/digital_signature_provider.dart';
-import 'package:desafio_mobile/shared/rsa_keys_provider.dart';
-import 'package:desafio_mobile/widgets/custom_button.dart';
-import 'package:desafio_mobile/widgets/logo.dart';
-import 'package:desafio_mobile/widgets/rsa_box.dart';
-import 'package:fast_rsa/fast_rsa.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:fast_rsa/fast_rsa.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:desafio_mobile/shared/widgets/rbox/rsa_box.dart';
+import 'package:desafio_mobile/shared/providers/rsa_keys_provider.dart';
+
+import 'package:desafio_mobile/shared/providers/digital_signature_provider.dart';
+
+import 'package:desafio_mobile/shared/widgets/export_initial_widgets.dart';
 
 // Classe VerifyScreen.
 class VerifyScreen extends StatefulWidget {
@@ -162,13 +160,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
       appBar: AppBar(
         title: const Text('Verificar assinatura'),
       ),
-      body: Center(
+      body: InitialBody(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            const SizedBox(height: 80),
-            const Logo(),
-            const SizedBox(height: 20),
+          children: [
             RsaBox(
               title: 'Verificação da assinatura digital',
               // se não tiver assinado, mostrar uma mensagem de erro.

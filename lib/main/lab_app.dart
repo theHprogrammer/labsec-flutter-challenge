@@ -20,16 +20,16 @@ import 'package:provider/provider.dart';
 import 'package:desafio_mobile/screens/home_screen.dart';
 
 import 'package:desafio_mobile/screens/ble_device_screen.dart';
-import 'package:desafio_mobile/shared/device_list_provider.dart';
+import 'package:desafio_mobile/shared/providers/device_list_provider.dart';
 
 import 'package:desafio_mobile/screens/rsa_screen.dart';
-import 'package:desafio_mobile/shared/rsa_keys_provider.dart';
+import 'package:desafio_mobile/shared/providers/rsa_keys_provider.dart';
 
 import 'package:desafio_mobile/screens/signature_screen.dart';
-import 'package:desafio_mobile/shared/digital_signature_provider.dart';
+import 'package:desafio_mobile/shared/providers/digital_signature_provider.dart';
 
 import 'package:desafio_mobile/screens/verify_screen.dart';
-import 'package:desafio_mobile/shared/verify_signature_provider.dart';
+import 'package:desafio_mobile/shared/providers/verify_signature_provider.dart';
 
 
 class LabApp extends StatelessWidget {

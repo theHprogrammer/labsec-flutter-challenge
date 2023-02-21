@@ -3,27 +3,33 @@
 // Data: 14/02/2023
 //
 // Função: Escolher o tamanho da chave e gerar a chave pública e privada.
+//
+// Observações:
 // Chave RSA: É um algoritmo de criptografia assimétrica, ou seja, utiliza duas chaves para criptografar e descriptografar uma mensagem.
-// A chave pública é utilizada para criptografar a mensagem e a chave privada é utilizada para descriptografar a mensagem.
+// A chave privada é utilizada para criptografar a mensagem e a chave publica é utilizada para descriptografar a mensagem.
 //
 // Detalhes:
-// 1. DropdownButton para escolher o tamanho da chave.
-// 2. Duas caixas para exibir a chave pública e privada.
-// 3. Botão para gerar as chaves.
-// 4. Usar o SharedPreferences para salvar as chaves.
-// 5. Usar o FastRsa para gerar as chaves.
+// 1. Gerar chave RSA.
+// 2. Tamanho da chave RSA: 512, 1024, 2048.
+//
+// Bibliotecas:
+// 1. fast_rsa: Biblioteca para gerar chaves RSA.
+// 2. shared_preferences: Biblioteca para salvar as chaves RSA no dispositivo.
+// 3. provider: Biblioteca para gerenciar o estado da aplicação.
 //
 
 // Importações.
-import 'package:desafio_mobile/shared/rsa_keys_provider.dart';
-import 'package:desafio_mobile/widgets/custom_button.dart';
-import 'package:desafio_mobile/widgets/logo.dart';
-import 'package:desafio_mobile/widgets/rsa_box.dart';
-import 'package:fast_rsa/fast_rsa.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:fast_rsa/fast_rsa.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:desafio_mobile/shared/widgets/rbox/rsa_box.dart';
+import 'package:desafio_mobile/shared/providers/rsa_keys_provider.dart';
+
+import 'package:desafio_mobile/shared/widgets/export_initial_widgets.dart';
 
 class RsaScreen extends StatefulWidget {
   const RsaScreen({Key? key}) : super(key: key);
@@ -43,6 +49,8 @@ class _RsaScreenState extends State<RsaScreen> {
     });
   }
 
+  // Método _loadRsaKeys().
+  // Carrega as chaves RSA do dispositivo.
   void _loadRsaKeys() async {
     final prefs = await SharedPreferences.getInstance();
     final publicKey = prefs.getString('publicKey');
@@ -53,29 +61,68 @@ class _RsaScreenState extends State<RsaScreen> {
         context.read<RsaKeysProvider>().updatePrivateKey(privateKey);
       } else {
         if (kDebugMode) {
-          print('O contexto não está montado.');
+          setState(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('O contexto não está montado.'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          });
         }
       }
     }
   }
 
+  // Método _generateKeys().
+  // Gera as chaves RSA.
   void _generateKeys() async {
-    final prefs = await SharedPreferences.getInstance();
-    final keyPair = await RSA.generate(_rsaSize);
-    final publicKey = keyPair.publicKey;
-    final privateKey = keyPair.privateKey;
-    prefs.setString('publicKey', publicKey);
-    prefs.setString('privateKey', privateKey);
-    if (context.mounted) {
-      context.read<RsaKeysProvider>().updatePublicKey(publicKey);
-      context.read<RsaKeysProvider>().updatePrivateKey(privateKey);
-    } else {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final keyPair = await RSA.generate(_rsaSize);
+      final publicKey = keyPair.publicKey;
+      final privateKey = keyPair.privateKey;
+      prefs.setString('publicKey', publicKey);
+      prefs.setString('privateKey', privateKey);
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Chaves geradas com sucesso.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      });
+      if (context.mounted) {
+        context.read<RsaKeysProvider>().updatePublicKey(publicKey);
+        context.read<RsaKeysProvider>().updatePrivateKey(privateKey);
+      } else {
+        if (kDebugMode) {
+          setState(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('O contexto não está montado.'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          });
+        }
+      }
+    } catch (e) {
       if (kDebugMode) {
-        print('O contexto não está montado.');
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Erro ao gerar as chaves.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        });
       }
     }
   }
 
+  // Método _showDialog().
+  // Mostra um dialog para confirmar a geração de uma nova chave.
   void _showDialog() {
     showDialog(
       context: context,
@@ -111,15 +158,9 @@ class _RsaScreenState extends State<RsaScreen> {
         appBar: AppBar(
           title: const Text('Gerar chave RSA'),
         ),
-        body: SizedBox(
-          height: double.infinity,
+        body: InitialBody(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 80),
-              const Logo(),
-              const SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -167,8 +208,6 @@ class _RsaScreenState extends State<RsaScreen> {
                     ?.split('-----')[2]
                     .trim(),
               ),
-              // Se as chaves forem nulas, exibe o botão gerar chave. Caso contrário, exibe o botão para "gerar nova chave".
-              // Se for para gerar nova chave, mostra o dialogo de confirmação.
               const SizedBox(height: 30),
               context.watch<RsaKeysProvider>().publicKey == null &&
                       context.watch<RsaKeysProvider>().privateKey == null

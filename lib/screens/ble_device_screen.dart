@@ -5,33 +5,38 @@
 // Função: Listar os dispositivos BLE (Bluetooth Low Energy) encontrados.
 //
 // Detalhes:
-// 1. Verificação se o Bluetooth está ligado.
+// 1. Verificação se o bluetooth está ligado.
 // 2. Verificação se o usuário deu permissão para o aplicativo acessar o Bluetooth.
-// 3. Scan dos dispositivos BLE (Bluetooth Low Energy). Reurn List<BluetoothDevice>.
-// 4. Uso da biblioteca shared_preferences para salvar a data e hora da última atualização da lista de dispositivos BLE.
-// 5. Uso da biblioteca intl para formatar a data e hora.
-// 6. Uso da biblioteca permission_handler para verificar se o usuário deu permissão para o aplicativo acessar o Bluetooth.
-// 7. Uso da biblioteca flutter_blue para scan dos dispositivos BLE (Bluetooth Low Energy).
-// 8. Uso da biblioteca provider para poder compartilhar a lista de dispositivos BLE (Bluetooth Low Energy) com outras telas.
+// 3. Verificação se o usuário deu permissão para o aplicativo acessar a localização.
+// 4. Verificação se o usuário deu permissão para fazer o scan de dispositivos BLE (Bluetooth Low Energy).
+//
+// Bibliotecas:
+// 1. Uso da biblioteca dart:async serve para trabalhar com assincronismo, ou seja, para trabalhar com funções que demoram para serem executadas.
+// 2. Uso da biblioteca package:intl/intl.dart serve para trabalhar com formatação de datas e horas.
+// 3. Uso da biblioteca package:provider/provider.dart serve para trabalhar com o padrão de projeto Provider permitindo que os dados sejam compartilhados entre widgets sem a necessidade de passar os dados manualmente.
+// 4. Uso da biblioteca package:flutter_blue/flutter_blue.dart serve para trabalhar com o Bluetooth Low Energy (BLE).
+// 5. Uso da biblioteca package:permission_handler/permission_handler.dart serve para trabalhar com permissões.
+// 6. Uso da biblioteca package:shared_preferences/shared_preferences.dart serve para trabalhar com preferências do usuário.
 //
 
 // Importações.
 import 'dart:async';
 
-import 'package:desafio_mobile/shared/device_list_provider.dart';
-import 'package:desafio_mobile/widgets/ble_list_box.dart';
-import 'package:desafio_mobile/widgets/custom_button.dart';
-import 'package:desafio_mobile/widgets/logo.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:intl/intl.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_blue/flutter_blue.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// Classe DeviceScreen.
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:desafio_mobile/shared/widgets/blebox/ble_list_box.dart';
+import 'package:desafio_mobile/shared/providers/device_list_provider.dart';
+
+import 'package:desafio_mobile/shared/widgets/export_initial_widgets.dart';
+
 class DeviceScreen extends StatefulWidget {
   const DeviceScreen({super.key});
 
@@ -39,15 +44,17 @@ class DeviceScreen extends StatefulWidget {
   State<DeviceScreen> createState() => _DeviceScreenState();
 }
 
-// Classe _DeviceScreenState.
 class _DeviceScreenState extends State<DeviceScreen> {
+  // dataTime, para armazenar a data e hora do scan de dispositivos BLE.
   String dateTime = 'N/A';
+
+  // deviceScan, para armazernar o estado do scan de dispositivos BLE.
   String? deviceScan = '';
 
-  // Instancia o FlutterBlue.
   final FlutterBlue flutterBlue = FlutterBlue.instance;
 
   // Método _checkBluetooth.
+  // Realiza todas as verificações necessárias para o scan de dispositivos BLE.
   Future<void> _checkBluetooth() async {
     try {
       // Verifica se o dispositivo está ligado.
@@ -57,15 +64,15 @@ class _DeviceScreenState extends State<DeviceScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('O Bluetooth não está ligado.'),
+              backgroundColor: Colors.red,
             ),
           );
         });
       } else {
         // Se o Bluetooth estiver ligado, verifica se o usuário deu permissão para o aplicativo acessar o Bluetooth.
         if (await Permission.bluetooth.request().isGranted) {
-          // Verifica a oermissão de localização.
+          // Verifica a permissão de localização.
           if (await Permission.locationWhenInUse.request().isGranted) {
-            // Verifica a permisão de acesso ao armazenamento.
             // Verifica a permissão de acesso ao scan de dispositivos BLE do bluetooth.
             if (await Permission.bluetoothScan.request().isGranted) {
               // Se o usuário deu permissão para o aplicativo acessar o Bluetooth, verifica se o scan de dispositivos BLE está sendo executado.
@@ -79,6 +86,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
                     const SnackBar(
                       content: Text(
                           'O scan de dispositivos BLE já está sendo executado.'),
+                      backgroundColor: Colors.orange,
                     ),
                   );
                 });
@@ -90,6 +98,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
                   const SnackBar(
                     content: Text(
                         'Permissão de acesso ao scan de dispositivos BLE do bluetooth não concedida.'),
+                    backgroundColor: Colors.red,
                   ),
                 );
               });
@@ -101,6 +110,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
                 const SnackBar(
                   content:
                       Text('Permissão de acesso a localização não concedida.'),
+                  backgroundColor: Colors.red,
                 ),
               );
             });
@@ -113,28 +123,27 @@ class _DeviceScreenState extends State<DeviceScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Erro ao verificar o Bluetooth.'),
+            backgroundColor: Colors.red,
           ),
         );
       });
     }
   }
 
-  // Método _addDeviceTolist, para adicionar o dispositivo BLE na lista de dispositivos BLE.
+  // Método _addDeviceTolist
+  // Adiciona o dispositivo BLE na lista de dispositivos BLE.
   Future<void> _addDeviceTolist(final BluetoothDevice device) async {
     try {
       // Verifica se o dispositivo BLE já está na lista de dispositivos BLE.
-      if (!context.read<DevicesListProvider>().devicesList.contains(device)) {
-        // Se o dispositivo BLE não estiver na lista de dispositivos BLE, adiciona o dispositivo BLE na lista de dispositivos BLE.
-        // Se o nome do dispositivo BLE for null ou vazio, adiciona o nome do dispositivo BLE como "Unknow Device".
+      if (!context.read<DevicesListProvider>().idDevices.contains(device.id.id)) {
+        // Se o nome do dispositivo BLE for nulo ou vazio, adiciona o dispositivo BLE na lista de dispositivos BLE trocando o nome do dispositivo BLE por 'Unknow Device'.
         if (device.name == null || device.name == '') {
-          context.read<DevicesListProvider>().devicesList.add(device);
           context.read<DevicesListProvider>().nameDevices.add('Unknow Device');
-          context.read<DevicesListProvider>().idDevices.add(device.id.id);
         } else {
-          context.read<DevicesListProvider>().devicesList.add(device);
           context.read<DevicesListProvider>().nameDevices.add(device.name);
-          context.read<DevicesListProvider>().idDevices.add(device.id.id);
         }
+        context.read<DevicesListProvider>().devicesList.add(device);
+        context.read<DevicesListProvider>().idDevices.add(device.id.id);
       }
     } catch (e) {
       // Se ocorrer algum erro, apresenta uma mensagem de erro.
@@ -142,6 +151,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Erro ao adicionar o dispositivo BLE na lista.'),
+            backgroundColor: Colors.red,
           ),
         );
       });
@@ -152,7 +162,8 @@ class _DeviceScreenState extends State<DeviceScreen> {
   Future<void> _scanBle() async {
     try {
       // Verifica se não é null.
-      if (context.read<DevicesListProvider>().devicesList != null) {
+      if (context.read<DevicesListProvider>().devicesList != null ||
+          context.read<DevicesListProvider>().devicesList.isNotEmpty) {
         // Limpa a lista de dispositivos BLE e muda o deviceScan para "Escaneando...".
         setState(() {
           context.read<DevicesListProvider>().devicesList.clear();
@@ -189,6 +200,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
                 const SnackBar(
                   content:
                       Text('Scan de dispositivos BLE executado com sucesso.'),
+                  backgroundColor: Colors.green,
                 ),
               );
             });
@@ -201,6 +213,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Nenhum dispositivo BLE encontrado.'),
+                  backgroundColor: Colors.red,
                 ),
               );
             });
@@ -313,13 +326,10 @@ class _DeviceScreenState extends State<DeviceScreen> {
         create: (_) => DevicesListProvider(),
         child: Consumer<DevicesListProvider>(
           builder: (_, deviceListProvider, __) {
-            return Center(
+            return InitialBody(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 80),
-                  const Logo(),
-                  const SizedBox(height: 5),
                   BleListBox(
                     dateTime: dateTime,
                     devicesList: context.read<DevicesListProvider>().toJson(

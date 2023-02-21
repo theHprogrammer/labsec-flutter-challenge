@@ -73,6 +73,7 @@ class _SignatureScreenState extends State<SignatureScreen> {
         final String deviceListJsonString = jsonEncode(deviceListJson);
 
         final prefs = await SharedPreferences.getInstance();
+        prefs.setString('deviceListJsonString', deviceListJsonString);
 
         // Gerar a assinatura digital com o algoritmo RSA e o hash SHA256.
         if (context.mounted) {
@@ -88,6 +89,9 @@ class _SignatureScreenState extends State<SignatureScreen> {
             // Atualizar a interface da tela.
             setState(() {
               // Atualizar a assinatura digital.
+              context
+                  .read<DigitalSignatureProvider>()
+                  .updateMessage(deviceListJsonString);
               context
                   .read<DigitalSignatureProvider>()
                   .updateSignature(signature);
@@ -152,12 +156,14 @@ class _SignatureScreenState extends State<SignatureScreen> {
   Future<void> _loadSignature() async {
     final prefs = await SharedPreferences.getInstance();
     final String? signature = prefs.getString('signature');
+    final String? message = prefs.getString('deviceListJsonString');
     if (signature != null) {
       // Atualizar a interface da tela.
       setState(() {
         // Atualizar a assinatura digital.
         // diferença entre read e watch
         context.read<DigitalSignatureProvider>().updateSignature(signature);
+        context.read<DigitalSignatureProvider>().updateMessage(message);
       });
     }
   }

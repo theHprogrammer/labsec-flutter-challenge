@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
             CustomButton(
               title: 'Verificar lista',
               onPressed: () {
-                Navigator.pushNamed(context, '/blank');
+                Navigator.pushNamed(context, '/verify');
               },
             ),
           ],

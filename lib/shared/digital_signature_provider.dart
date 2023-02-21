@@ -9,11 +9,18 @@ import 'package:flutter/foundation.dart';
 
 class DigitalSignatureProvider extends ChangeNotifier {
   String? _signature;
+  String? _message;
 
   String? get signature => _signature;
+  String? get message => _message;
 
   void updateSignature(String? signature) {
     _signature = signature;
+    notifyListeners();
+  }
+
+  void updateMessage(String? message) {
+    _message = message;
     notifyListeners();
   }
 

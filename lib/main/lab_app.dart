@@ -1,36 +1,26 @@
 // Descrição: Gerenciador de telas do aplicativo.
 // Autor: Helder Henrique da Silva
 // Data: 20/02/2023
+// Atualizado: 22/02/2023
 //
 // Função: Gerencia as rotas do aplicativo e seus providers.
 //
-// Tela inicial: HomeScreen "/"
+// Tela inicial: HomePage "/"
 //
 // Rotas:
-// DeviceScreen "/ble_device_screen"
-// RsaScreen "/rsa_screen"
-// SignatureScreen "/signature_screen"
-// VerifyScreen "/verify_screen"
+// DevicePage "/ble_device_page"
+// RsaPage "/rsa_page"
+// SignaturePage "/signature_page"
+// VerifyPage "/verify_page"
 //
 
 // Importações.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:desafio_mobile/screens/home_screen.dart';
+import '/pages/export_pages.dart';
 
-import 'package:desafio_mobile/screens/ble_device_screen.dart';
-import 'package:desafio_mobile/shared/providers/device_list_provider.dart';
-
-import 'package:desafio_mobile/screens/rsa_screen.dart';
-import 'package:desafio_mobile/shared/providers/rsa_keys_provider.dart';
-
-import 'package:desafio_mobile/screens/signature_screen.dart';
-import 'package:desafio_mobile/shared/providers/digital_signature_provider.dart';
-
-import 'package:desafio_mobile/screens/verify_screen.dart';
-import 'package:desafio_mobile/shared/providers/verify_signature_provider.dart';
-
+import '/providers/export_providers.dart';
 
 class LabApp extends StatelessWidget {
   const LabApp({super.key});
@@ -40,10 +30,10 @@ class LabApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => DevicesListProvider(),
+          create: (_) => BleDeviceProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => RsaKeysProvider(),
+          create: (_) => RsaProvider(),
         ),
         ChangeNotifierProvider(
           create: (_) => DigitalSignatureProvider(),
@@ -57,12 +47,12 @@ class LabApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const HomeScreen(),
+        home: const HomePage(),
         routes: <String, WidgetBuilder>{
-          '/ble_device_screen': (BuildContext context) => const DeviceScreen(),
-          '/rsa_screen': (BuildContext context) => const RsaScreen(),
-          '/signature_screen': (BuildContext context) => const SignatureScreen(),
-          '/verify_screen': (BuildContext context) => const VerifyScreen(),
+          '/ble_device_page': (BuildContext context) => const BleDevicePage(),
+          '/rsa_page': (BuildContext context) => const RsaPage(),
+          '/signature_page': (BuildContext context) => const DigitalSignaturePage(),
+          '/verify_page': (BuildContext context) => const VerifySignaturePage(),
         },
       ),
     );

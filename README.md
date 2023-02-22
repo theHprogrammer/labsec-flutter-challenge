@@ -89,7 +89,7 @@ Antes de qualquer coisa, você precisa ter em sua máquina o flutter e o android
     5. Dentro do diretório clonado você terá duas opções:
     > 1.1 No terminal execute "flutter pub get" para baixar as dependências.
     >
-    > 1.2 Chame o comando "fluter run".
+    > 1.2 Chame o comando "flutter run".
     >
     > Se nenhum erro ocorrer o projeto será simulado no google-chrome como uma página web, já que por padrão o flutter o coloca como emulador inicial.
     >

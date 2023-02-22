@@ -96,42 +96,25 @@ class _SignatureScreenState extends State<SignatureScreen> {
               Hash.SHA256,
               Provider.of<RsaKeysProvider>(context, listen: false).privateKey!,
             );
-            // Verificar se a assinatura já foi feita.
-            if (signature ==
-                Provider.of<DigitalSignatureProvider>(context, listen: false)
-                    .signature) {
-              // Mostrar uma mensagem de erro.
-              setState(() {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('A assinatura digital já foi gerada.'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              });
-            } else {
-              // Salvar a assinatura digital no dispositivo.
-              prefs.setString('signature', signature);
+            prefs.setString('signature', signature);
 
-              // Atualizar a interface da tela.
-              setState(() {
-                // Atualizar a assinatura digital.
-                context
-                    .read<DigitalSignatureProvider>()
-                    .updateMessage(deviceListJsonString);
-                context
-                    .read<DigitalSignatureProvider>()
-                    .updateSignature(signature);
-                // Exibir snackbar com a mensagem de sucesso.
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Assinatura digital gerada com sucesso.'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              });
-            }
+            // Atualizar a interface da tela.
+            setState(() {
+              // Atualizar a assinatura digital.
+              context
+                  .read<DigitalSignatureProvider>()
+                  .updateMessage(deviceListJsonString);
+              context
+                  .read<DigitalSignatureProvider>()
+                  .updateSignature(signature);
+              // Exibir snackbar com a mensagem de sucesso.
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Assinatura digital gerada com sucesso.'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            });
           } else {
             // Mostrar uma mensagem de erro.
             setState(() {

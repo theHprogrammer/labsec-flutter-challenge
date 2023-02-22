@@ -143,12 +143,12 @@ class _VerifyScreenState extends State<VerifyScreen> {
         // Mensagem de erro.
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Erro ao verificar a assinatura digital!'),
+            content: Text('Assinatura digital inválida!'),
             backgroundColor: Colors.red,
           ),
         );
       });
-      _infoText = 'Erro ao verificar a assinatura digital!';
+      _infoText = 'Assinatura digital inválida!';
       return false;
     }
   }

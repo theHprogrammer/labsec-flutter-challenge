@@ -134,27 +134,31 @@ class _DeviceScreenState extends State<DeviceScreen> {
   // Adiciona o dispositivo BLE na lista de dispositivos BLE.
   Future<void> _addDeviceTolist(final BluetoothDevice device) async {
     try {
-      // Verifica se o dispositivo BLE já está na lista de dispositivos BLE.
-      if (!context.read<DevicesListProvider>().idDevices.contains(device.id.id)) {
-        // Se o nome do dispositivo BLE for nulo ou vazio, adiciona o dispositivo BLE na lista de dispositivos BLE trocando o nome do dispositivo BLE por 'Unknow Device'.
-        if (device.name == null || device.name == '') {
-          context.read<DevicesListProvider>().nameDevices.add('Unknow Device');
-        } else {
-          context.read<DevicesListProvider>().nameDevices.add(device.name);
+      if (context.mounted) {
+        // Verifica se o dispositivo BLE já está na lista de dispositivos BLE.
+        if (!context.read<DevicesListProvider>().devicesList.contains(device)) {
+          // Se o nome do dispositivo BLE for nulo ou vazio, adiciona o dispositivo BLE na lista de dispositivos BLE trocando o nome do dispositivo BLE por 'Unknow Device'.
+          if (device.name == null || device.name == '') {
+            context.read<DevicesListProvider>().nameDevices.add('Unknow Device');
+          } else {
+            context.read<DevicesListProvider>().nameDevices.add(device.name);
+          }
+          context.read<DevicesListProvider>().devicesList.add(device);
+          context.read<DevicesListProvider>().idDevices.add(device.id.id);
         }
-        context.read<DevicesListProvider>().devicesList.add(device);
-        context.read<DevicesListProvider>().idDevices.add(device.id.id);
       }
     } catch (e) {
       // Se ocorrer algum erro, apresenta uma mensagem de erro.
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Erro ao adicionar o dispositivo BLE na lista.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      });
+      if (context.mounted) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Erro ao adicionar o dispositivo BLE na lista.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        });
+      }
     }
   }
 

@@ -2,12 +2,6 @@
 // Autor: Helder Henrique da Silva
 // Data: 10/02/2023
 //
-// Detalhes:
-// 1. 4 botões padronizados no meio da tela.
-// 2. Cada botão possui um título e leva para uma nova tela.
-// 3. Logo acima dos botões.
-// 4. Abaixo da logo, o nome da tela. Neste caso, "Home".
-//
 // Botões:
 // 1. Dispositivos BLE
 // 2. Gerar chave RSA
@@ -16,54 +10,47 @@
 //
 
 // Importações.
-import 'package:desafio_mobile/widgets/custom_button.dart';
-import 'package:desafio_mobile/widgets/logo.dart';
+import 'package:desafio_mobile/shared/widgets/export_initial_widgets.dart';
+
 import 'package:flutter/material.dart';
 
-// Classe HomeScreen.
-// Responsável por retornar o widget da tela inicial.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
-  // Método que retorna o widget da tela inicial.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
       ),
-      body: Center(
+      body: InitialBody(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 30),
-            const Logo(),
-            const SizedBox(height: 50),
             CustomButton(
               title: 'Dispositivos BLE',
               onPressed: () {
-                Navigator.pushNamed(context, '/ble_device');
+                Navigator.pushNamed(context, '/ble_device_screen');
               },
             ),
             const SizedBox(height: 20),
             CustomButton(
               title: 'Gerar chave RSA',
               onPressed: () {
-                Navigator.pushNamed(context, '/blank');
+                Navigator.pushNamed(context, '/rsa_screen');
               },
             ),
             const SizedBox(height: 20),
             CustomButton(
               title: 'Assinar lista',
               onPressed: () {
-                Navigator.pushNamed(context, '/blank');
+                Navigator.pushNamed(context, '/signature_screen');
               },
             ),
             const SizedBox(height: 20),
             CustomButton(
               title: 'Verificar lista',
               onPressed: () {
-                Navigator.pushNamed(context, '/blank');
+                Navigator.pushNamed(context, '/verify_screen');
               },
             ),
           ],

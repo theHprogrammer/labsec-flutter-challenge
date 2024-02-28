@@ -132,8 +132,8 @@ Eu recomendo tentar emular esse projeto diretamente no celular. Visto que quando
 4. Open Git Bash.
 5. Type git clone (clone git) and paste the URL you copied earlier.
 
-```c
-$ git clone https://github.com/theHprogrammer/desafio_mobile.git
+```bash
+$ git clone git@github.com:theHprogrammer/LABSEC_FLUTTER_CHALLENGE.git
 ```
 
 6. Press Enter to create your local clone.

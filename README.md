@@ -82,8 +82,8 @@ Antes de qualquer coisa, você precisa ter em sua máquina o flutter e o android
     1. Crie um novo diretório em algum lugar de sua máquina com o nome que quiser (Opcional - apenas para organIzação)
     2. Dentro do diretório abra o bash;
     3. Clonee o repositório do projeto que esta no github com:
-    ```
-    git clone https://github.com/theHprogrammer/desafio_mobile.git
+    ```bash
+    git clone git@github.com:theHprogrammer/LABSEC_FLUTTER_CHALLENGE.git
     ```
     4. Entre no projeto clonado (Se voce estiver com o terminal aberto, pode usar cd "nome-do-diretorio/" sem as aspas);
     5. Dentro do diretório clonado você terá duas opções:
@@ -132,8 +132,8 @@ Eu recomendo tentar emular esse projeto diretamente no celular. Visto que quando
 4. Open Git Bash.
 5. Type git clone (clone git) and paste the URL you copied earlier.
 
-```c
-$ git clone https://github.com/theHprogrammer/desafio_mobile.git
+```bash
+git clone git@github.com:theHprogrammer/LABSEC_FLUTTER_CHALLENGE.git
 ```
 
 6. Press Enter to create your local clone.

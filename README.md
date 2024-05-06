@@ -133,7 +133,7 @@ Eu recomendo tentar emular esse projeto diretamente no celular. Visto que quando
 5. Type git clone (clone git) and paste the URL you copied earlier.
 
 ```bash
-git clone git@github.com:theHprogrammer/LABSEC_FLUTTER_CHALLENGE.git
+git clone git@github.com:theHprogrammer/labsec-flutter-challenge.git
 ```
 
 6. Press Enter to create your local clone.
